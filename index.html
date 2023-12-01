@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>3D Printer Status</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>3D Printer Status</h2>
+            <button type="button" class="btn btn-primary" onclick="fetchPrinterStatus()">Refresh</button>
+        </div>
+        <div id="printerStatus" class="row row-cols-1 row-cols-md-3 mt-4"></div> <!-- Change here -->
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+        function fetchPrinterStatus() {
+            let apiUrl = '/status';
+            /// json data
+            // [{"ip":"...", "name":"...", "status":"..."}, ...]
+            // iterate over the data and create cards
+            $.get(apiUrl, function(data) {
+                if (data.length === 0) {
+                    $('#printerStatus').html('<p>No printers found</p>');
+                } else {
+                    data.forEach(function(item) {
+                        let cardId = item.ip.replace(/\./g, '-'); // Replace periods with dashes
+                        let card = '<div class="col mb-4" id='+cardId+'>';
+                        card += '<div class="card h-100">';
+                        card += '<img class="card-img-top" src="http://'+item.ip+'/api/v1/camera/0/snapshot" alt="3D printer image">';
+                        card += '<div class="card-body">';
+                        card += '<h5 class="card-title">'+item.name+'</h5>';
+                        card += '<p class="card-text">'+item.status+'</p>';
+                        card += '<a href="/detail?ip='+item.ip+'" class="btn btn-primary">Details</a>';
+                        card += '</div>';
+                        card += '</div>';
+                        card += '</div>';
+
+                        // if the card already exists, replace it
+                        if ($('#printerStatus').find('#'+cardId).length) {
+                            $('#'+cardId).replaceWith(card);
+                        } else {
+                            $('#printerStatus').append(card);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Fetch printer status on page load
+        $(document).ready(function() {
+            fetchPrinterStatus()
+
+            // Optionally, you can set up an interval to refresh the status periodically
+            setInterval(fetchPrinterStatus, 20000); // Refresh every 60 seconds, adjust as needed
+        });
+    </script>
+</body>
+</html>

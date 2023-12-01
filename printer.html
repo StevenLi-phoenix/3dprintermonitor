@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Title</title>
+</head>
+<body>
+    <div class="container mt-5" id="printjob">
+        <!--/print_job-->
+        <!--"time_elapsed": 0,-->
+        <!--"time_total": 0,-->
+        <!--"datetime_started": "2023-12-01T16:56:16.310Z",-->
+        <!--"datetime_finished": "2023-12-01T16:56:16.310Z",-->
+        <!--"datetime_cleaned": "2023-12-01T16:56:16.310Z",-->
+        <!--"source": "string",-->
+        <!--"source_user": "string",-->
+        <!--"source_application": "string",-->
+        <!--"name": "string",-->
+        <!--"uuid": "string",-->
+        <!--"reprint_original_uuid": "string",-->
+        <!--"progress": 0,-->
+        <!--"state": "none",-->
+        <!--"result": "Failed"-->
+        <div class="progress" id="premade_pregressbar">
+        </div>
+<!--        <table class="table">-->
+<!--          <thead>-->
+<!--            <tr>-->
+<!--              <th scope="col">#</th>-->
+<!--              <th scope="col">properties</th>-->
+<!--              <th scope="col">status</th>-->
+<!--            </tr>-->
+<!--          </thead>-->
+<!--          <tbody>-->
+<!--            <tr>-->
+<!--              <th scope="row">1</th>-->
+<!--              <td>time_elapsed</td>-->
+<!--              <td>0</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--              <th scope="row">2</th>-->
+<!--              <td>time_total</td>-->
+<!--              <td>0</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--              <th scope="row">3</th>-->
+<!--              <td>datetime_started</td>-->
+<!--              <td>2023-12-01T16:56:16.310Z</td>-->
+<!--            </tr>-->
+<!--          </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+    </div>
+    <script>
+        function fetchPrintJob(){
+            let apiUrl = '/print_job';
+            $.get(apiUrl, function(data) {
+                if (data.length === 0) {
+                    $('#printjob').html('<p>No printers found</p>');
+                } else {
+                    // it is a json object
+                    // for each key and value, create a table
+                    let table = '<table class="table">';
+                    table += '<thead>';
+                    table += '<tr>';
+                    table += '<th scope="col">#</th>';
+                    table += '<th scope="col">properties</th>';
+                    table += '<th scope="col">status</th>';
+                    table += '</tr>';
+                    table += '</thead>';
+                    table += '<tbody>';
+                    let i = 0;
+                    for (let key in data) {
+                        table += '<tr>';
+                        table += '<th scope="row">'+i+'</th>';
+                        table += '<td>'+key+'</td>';
+                        table += '<td>'+data[key]+'</td>';
+                        table += '</tr>';
+                        i++;
+                    }
+                    table += '</tbody>';
+                    table += '</table>';
+                    $('#printjob').html(table);
+                    if (data['state'] === 'printing') {
+                        let progressbars = '<div class="progress-bar" role="progressbar" style="width: '+data['progress']+'%" aria-valuenow="'+data['progress']+'" aria-valuemin="0" aria-valuemax="100"></div>';
+                        $('#printjob').find('#premade_pregressbar').html(progressbars);
+                    }
+                }
+            });
+        }
+    </script>
+
+
+<!--/system-->
+<!--"name": "string",-->
+<!--"platform": "string",-->
+<!--"hostname": "string",-->
+<!--"firmware": "string",-->
+<!--"country": "string",-->
+<!--"language": "string",-->
+<!--"uptime": 0,-->
+<!--"time": "utc": 0-->
+<!--"type": "string",-->
+<!--"variant": "string",-->
+<!--"memory": {-->
+<!--"total": 0,-->
+<!--"used": 0-->
+<!--"hardware": "typeid": 0; "revision": 0-->
+<!--"log": "string",-->
+<!--"guid": "string"-->
+
+    <div class="container mt-5" id="system">
+    </div>
+    <script>
+        function fetchSystem(){
+            let apiUrl = '/system';
+            $.get(apiUrl, function(data) {
+                if (data.length === 0) {
+                    $('#system').html('<p>No printers found</p>');
+                } else {
+                    // it is a json object
+                    // for each key and value, create a table
+                    let table = '<table class="table">';
+                    table += '<thead>';
+                    table += '<tr>';
+                    table += '<th scope="col">#</th>';
+                    table += '<th scope="col">properties</th>';
+                    table += '<th scope="col">status</th>';
+                    table += '</tr>';
+                    table += '</thead>';
+                    table += '<tbody>';
+                    let i = 0;
+                    for (let key in data) {
+                        table += '<tr>';
+                        table += '<th scope="row">'+i+'</th>';
+                        table += '<td>'+key+'</td>';
+                        table += '<td>'+data[key]+'</td>';
+                        table += '</tr>';
+                        i++;
+                    }
+                    table += '</tbody>';
+                    table += '</table>';
+                    $('#system').html(table);
+                }
+            });
+        }
+    </script>
+
+
+<!--/history/print_jobs-->
+<!--[-->
+<!--  {-->
+<!--    "time_elapsed": 0,-->
+<!--    "time_estimated": 0,-->
+<!--    "time_total": 0,-->
+<!--    "datetime_started": "2023-12-01T16:56:16.376Z",-->
+<!--    "datetime_finished": "2023-12-01T16:56:16.376Z",-->
+<!--    "datetime_cleaned": "2023-12-01T16:56:16.376Z",-->
+<!--    "result": "Finished",-->
+<!--    "source": "string",-->
+<!--    "reprint_original_uuid": "string",-->
+<!--    "name": "string",-->
+<!--    "uuid": "string"-->
+<!--  },-->
+<!--...-->
+<!--]-->
+    <div id="history" class="row row-cols-1 row-cols-md-3 mt-4"></div>
+    <script>
+        function fetchHistory(){
+            let apiUrl = '/history/print_jobs';
+            $.get(apiUrl, function(data) {
+                if (data.length === 0) {
+                    $('#history').html('<p>No printers found</p>');
+                } else {
+                    data.foreach(function(item) {
+                        let cardId = item.uuid;
+                        let card = '<div class="col mb-4" id='+cardId+'>';
+                        card += '<div class="card h-100">';
+                        card += '<div class="card-body">';
+                        card += '<h5 class="card-title">'+item.name+'</h5>';
+                        card += '<p class="card-text">'+item.result+'</p>';
+                        // table
+                        card += function () {
+                            let table = '<table class="table">';
+                            table += '<thead>';
+                            table += '<tr>';
+                            table += '<th scope="col">#</th>';
+                            table += '<th scope="col">properties</th>';
+                            table += '<th scope="col">status</th>';
+                            table += '</tr>';
+                            table += '</thead>';
+                            table += '<tbody>';
+                            let i = 0;
+                            for (let key in item) {
+                                table += '<tr>';
+                                table += '<th scope="row">'+i+'</th>';
+                                table += '<td>'+key+'</td>';
+                                table += '<td>'+item[key]+'</td>';
+                                table += '</tr>';
+                                i++;
+                            }
+                            table += '</tbody>';
+                            table += '</table>';
+                            return table;
+                        }(
+
+                        card += '</div>';
+                        card += '</div>';
+                        card += '</div>';
+
+                        // if the card already exists, replace it
+                        if ($('#history').find('#'+cardId).length) {
+                            $('#'+cardId).replaceWith(card);
+                        } else {
+                            $('#history').append(card);
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            fetchPrintJob();
+            fetchSystem();
+            fetchHistory();
+            setInterval(fetchPrintJob, 20000);
+            setInterval(fetchSystem, 20000);
+            setInterval(fetchHistory, 20000);
+        });
+    </script>
+</body>
+</html>
