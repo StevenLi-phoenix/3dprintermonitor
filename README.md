@@ -26,9 +26,3 @@ This project is a 3D printer monitor that allows you to monitor the status of mu
 - `config.py`: This file contains the configuration settings for the project.
 - `index.html`: This is the main webpage that displays the status of all connected 3D printers.
 - `printer.html`: This webpage displays detailed information about a specific printer.
-
-## Contributing
-Please read `CONTRIBUTING.md` for details on our code of conduct, and the process for submitting pull requests to us.
-
-## License
-This project is licensed under the MIT License - see the `LICENSE.md` file for details.
