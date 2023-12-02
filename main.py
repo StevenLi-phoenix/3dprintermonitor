@@ -24,11 +24,14 @@ def _multiprocessor_get_status(machine):
     if answer == "Not found": answer = "Idle"
     return answer
 
+
 def _multiprocessor_printer(machine):
     return requests.get(f"http://{machine['ip_address']}/api/v1/printer", timeout=5).json()
 
+
 def _multiprocessor_get_name(machine):
     return requests.get(f"http://{machine['ip_address']}/api/v1/system/name", timeout=5).json()
+
 
 @app.get("/")
 def root():
@@ -97,7 +100,8 @@ def get_all_status():
         results = pool.map(_multiprocessor_get_status, machines)
     with multiprocessing.Pool(processes=len(machines)) as pool:
         names = pool.map(_multiprocessor_get_name, machines)
-    return [{"status": result, "name": name, "ip":machine["ip_address"]} for result, name, machine in zip(results, names, machines)]
+    return [{"status": result, "name": name, "ip": machine["ip_address"]} for result, name, machine in
+            zip(results, names, machines)]
 
 
 @app.get("/status?ip={ip}")
@@ -107,7 +111,8 @@ def get_status(ip):
     :return: a machine's status
     :return type: json
     """
-    return {"status":requests.get(f"http://{ip}/api/v1/print_job/status").json(), "name":requests.get(f"http://{ip}/api/v1/system/name").json()}
+    return {"status": requests.get(f"http://{ip}/api/v1/print_job/status").json(),
+            "name": requests.get(f"http://{ip}/api/v1/system/name").json()}
 
 
 @app.get("/printer")
@@ -124,6 +129,7 @@ def get_all_status():
         results = pool.map(_multiprocessor_printer, machines)
     return results
 
+
 @app.get("/printer?ip={ip}")
 def get_status(ip):
     """
@@ -132,6 +138,7 @@ def get_status(ip):
     :return type: json
     """
     return requests.get(f"http://{ip}/api/v1/print_job/status").json()
+
 
 @app.get("/index.html")
 def index_html():
@@ -155,4 +162,5 @@ def return_printer_ip_simplified():
 
 if __name__ == '__main__':
     import uvicorn
+
     uvicorn.run(app, host="localhost", port=8000)
